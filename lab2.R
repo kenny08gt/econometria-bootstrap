@@ -53,8 +53,6 @@ varianza <- function(df, reg, boots, n) {
   bRows <- df[sample(nrow(df), sampleSize), ]
   # do 7 bootstrap replications
   bSamples <- boots
-  # make container for results
-  bResults <- rep(NA, bSamples) 
   
   var_df <- data.frame('VAR' = 1:1)
   
@@ -64,11 +62,9 @@ varianza <- function(df, reg, boots, n) {
     bData <- bRows[sample(sampleSize, size = sampleSize, replace = TRUE), ]
     # compute your statistic of interest
     y <- lm(formula = reg, data = bData)
-    y
+    
     y_hat <- predict(y)
     esperanza <- mean(y_hat)
-    #print(esperanza)
-    #print(y_hat)
     
     var <- (1 / (boots - 1)) * sum((y_hat - esperanza)**2)
     var_df <- rbind(var_df, VAR = c(var))
@@ -78,4 +74,35 @@ varianza <- function(df, reg, boots, n) {
   return(mean_var)
 }
 
-varianza(df = know_data, boots = 7, n = 10, reg = get_formula(dataset = know_data, degree = 2))
+
+sesgo <- function(df, reg, boots, n) {
+  # fix randomization seed, make sample() reproducible
+  set.seed(123)
+  
+  sampleSize <- n
+  bRows <- df[sample(nrow(df), sampleSize), ]
+  # do 7 bootstrap replications
+  bSamples <- boots
+  
+  sesgo_df <- data.frame('SESGO' = 1:1)
+  
+  # loop over bootstraps
+  for (b in seq_len(bSamples)) { 
+    # make bootstrap draw from bRows
+    bData <- bRows[sample(sampleSize, size = sampleSize, replace = TRUE), ]
+    # compute your statistic of interest
+    y <- lm(formula = reg, data = bData)
+    
+    y_hat <- predict(y)
+    esperanza <- mean(y_hat)
+    
+    bias_square <- (esperanza - y_hat)**2
+    sesgo_df <- rbind(sesgo_df, VAR = c(bias_square))
+  }
+  sesgo_df = sesgo_df[-1,]
+  mean_sesgo <- mean(sesgo_df)
+  return(mean_sesgo)
+}
+
+varianza(df = know_data, boots = 1000, n = 500, reg = get_formula(dataset = know_data, degree = 2))
+sesgo(df = know_data, boots = 10, n = 50, reg = get_formula(dataset = know_data, degree = 2))
