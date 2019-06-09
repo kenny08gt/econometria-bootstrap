@@ -28,7 +28,6 @@ get_formula <- function(dataset, degree = 2) {
   formula <- paste0("output ~ ",formula)
   return(formula)
 }
-
 ```
 
 ## Ejercicio 1
@@ -102,6 +101,7 @@ sesgo(df = know_data, boots = 4, n = 500, reg = "output ~ input")
 
 # Ejercicio 3
 ```{r}
+
 i <- 4
 x <- seq(1, i)
 results <- data.frame("VAR" = rep(NA, length(x)), "SES" = rep(NA,length(x)))
@@ -129,5 +129,43 @@ fill=c("blue","red")
 )}
 ```
 
+# Ejercicio 4
 
+```{r}
+head(Boston)
+```
+```{r}
+cor(Boston)
+```
+
+```{r}
+heatmap(cor(Boston))
+```
+
+```{r}
+var_ses <- function(df, reg, boots, n) {
+  var <- varianza(df = df,reg = reg, boots = boots, n = n)
+  ses <- sesgo(df, reg, boots, n)
+  sprintf('Var: %f. Ses: %f', var, ses)
+}
+
+data <- Boston %>% 
+  dplyr::select(lstat,medv,rm,ptratio)
+
+names(data)[1] <- "input"
+names(data)[2] <- "output"
+names(data)[3] <- "input2"
+names(data)[4] <- "input3"
+
+data.rows = nrow(data)
+var_ses(df = data,reg = "output ~ input + input2 + input3", boots = 4,n = data.rows)
+var_ses(df = data,reg = "output ~ input + input2 ", boots = 4,n = data.rows)
+var_ses(df = data,reg = "output ~ input2 + input3 ", boots = 4,n = data.rows)
+var_ses(df = data,reg = "output ~ I(input2**2) + I(input3**2) ", boots = 4,n = data.rows)
+var_ses(df = data,reg = "output ~ I(input**2) + I(input2**2) + I(input3**2)", boots = 4,n = data.rows)
+var_ses(df = data,reg = "output ~ I(input**3) + I(input2**3) + I(input3**3)", boots = 4,n = data.rows)
+```
+
+El modelo que parece tener mejor relación entre varianza y sesgo.
+'input2 + input3' que sería 'rm + ptratio'
 
