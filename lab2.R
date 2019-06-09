@@ -107,3 +107,4 @@ sesgo <- function(df, reg, boots, n) {
 
 varianza(df = know_data, boots = 4, n = 506, reg = ,"output ~ input")
 sesgo(df = know_data, boots = 4, n = 506, reg = ,"output ~ input")
+

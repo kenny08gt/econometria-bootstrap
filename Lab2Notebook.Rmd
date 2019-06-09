@@ -36,7 +36,7 @@ get_formula <- function(dataset, degree = 2) {
 
 varianza <- function(df, reg, boots, n) {
   # fix randomization seed, make sample() reproducible
-  set.seed(123)
+  set.seed(527)
   
   sampleSize <- n
   bRows <- df[sample(nrow(df), sampleSize), ]
@@ -70,7 +70,7 @@ print(var)
 ```{r}
 sesgo <- function(df, reg, boots, n) {
   # fix randomization seed, make sample() reproducible
-  set.seed(123)
+  set.seed(527)
   
   sampleSize <- n
   bRows <- df[sample(nrow(df), sampleSize), ]
@@ -89,19 +89,45 @@ sesgo <- function(df, reg, boots, n) {
     y_hat <- predict(y)
     esperanza <- mean(y_hat)
     
-    bias_square <- (esperanza - y_hat)**2
+    bias_square <- (esperanza - y_hat)^2
+
     sesgo_df <- rbind(sesgo_df, VAR = c(bias_square))
   }
   sesgo_df = sesgo_df[-1,]
   mean_sesgo <- mean(sesgo_df)
   return(mean_sesgo)
 }
-sesgo(df = know_data, boots = 10, n = know_data.rows, reg = "output ~ input")
+sesgo(df = know_data, boots = 4, n = 500, reg = "output ~ input")
 ```
 
 # Ejercicio 3
 ```{r}
+i <- 4
+x <- seq(1, i)
+results <- data.frame("VAR" = rep(NA, length(x)), "SES" = rep(NA,length(x)))
+for (degree in x) {
+  var <- varianza(df = know_data, boots = 3, n = know_data.rows, reg = get_formula(know_data, degree = degree))
+  ses <- sesgo(df = know_data, boots = 4, n = 500, reg = get_formula(know_data, degree = degree))
+  results$VAR[floor(degree)] <- var
+  results$SES[floor(degree)] <- ses
+}
+
+results
 
 ```
+
+```{r}
+{plot(x, results$VAR,
+main="grapg",
+ylab="",
+type="l",
+col="blue", ylim = c(50, 80));
+lines(x,results$SES, col="red");
+legend("topleft",
+c("Var","ses"),
+fill=c("blue","red")
+)}
+```
+
 
 
