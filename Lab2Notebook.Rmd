@@ -1,7 +1,12 @@
 ---
-title: "R Notebook"
+title: "Laboratorio #3"
 output: html_notebook
 ---
+
+#### Alan Hurtarte - 19000590
+
+---
+
 # Bias-Variance Tradeoff
 ```{r}
 library(MASS)
@@ -50,14 +55,14 @@ varianza <- function(df, reg, boots, n) {
     y_hat <- predict(y)
     esperanza <- mean(y_hat)
     
-    var <- (1 / (boots - 1)) * sum((y_hat - esperanza)**2)
+    var <- (1 / (n - 1)) * sum((y_hat - esperanza)**2)
     var_df <- rbind(var_df, VAR = c(var))
   }
   var_df = var_df[-1,]
   mean_var <- mean(var_df)
   return(mean_var)
 }
-var <- varianza(df = know_data, boots = 1000, n = 500, reg = get_formula(dataset = know_data, degree = 2))
+var <- varianza(df = know_data, boots = 100, n = know_data.rows, reg = "output ~ input")
 print(var)
 ```
 
@@ -91,8 +96,12 @@ sesgo <- function(df, reg, boots, n) {
   mean_sesgo <- mean(sesgo_df)
   return(mean_sesgo)
 }
-sesgo(df = know_data, boots = 10, n = 50, reg = get_formula(dataset = know_data, degree = 2))
+sesgo(df = know_data, boots = 10, n = know_data.rows, reg = "output ~ input")
 ```
 
+# Ejercicio 3
+```{r}
+
+```
 
 

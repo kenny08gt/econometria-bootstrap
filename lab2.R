@@ -66,10 +66,11 @@ varianza <- function(df, reg, boots, n) {
     y_hat <- predict(y)
     esperanza <- mean(y_hat)
     
-    var <- (1 / (boots - 1)) * sum((y_hat - esperanza)**2)
+    var <- (1 / (n - 1)) * sum((y_hat - esperanza)**2)
     var_df <- rbind(var_df, VAR = c(var))
   }
   var_df = var_df[-1,]
+  print(var_df)
   mean_var <- mean(var_df)
   return(mean_var)
 }
@@ -104,5 +105,5 @@ sesgo <- function(df, reg, boots, n) {
   return(mean_sesgo)
 }
 
-varianza(df = know_data, boots = 1000, n = 500, reg = get_formula(dataset = know_data, degree = 2))
-sesgo(df = know_data, boots = 10, n = 50, reg = get_formula(dataset = know_data, degree = 2))
+varianza(df = know_data, boots = 4, n = 506, reg = ,"output ~ input")
+sesgo(df = know_data, boots = 4, n = 506, reg = ,"output ~ input")
